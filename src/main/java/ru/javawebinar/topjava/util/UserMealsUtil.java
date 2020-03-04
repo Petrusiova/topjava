@@ -31,16 +31,12 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime,
                                                             LocalTime endTime, int caloriesPerDay) {
-        Map<LocalDate, Integer> map = new HashMap<>();
-        meals.forEach(item ->
-            map.merge(item.getDateTime().toLocalDate(), item.getCalories(), (oldVal, newVal) -> oldVal + newVal));
-
         List<UserMealWithExcess> result = new ArrayList<>();
         meals.forEach(item -> {
             LocalDateTime dateTime = item.getDateTime();
             if (TimeUtil.isBetweenHalfOpen(dateTime.toLocalTime(), startTime, endTime))
                 result.add(new UserMealWithExcess(dateTime, item.getDescription(), item.getCalories(),
-                        caloriesPerDay >= map.getOrDefault(dateTime.toLocalDate(), 0)));
+                        caloriesPerDay >= item.getGeneralCalories(dateTime.toLocalDate())));
         });
 
         return result;
@@ -48,15 +44,10 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime,
                                                              LocalTime endTime, int caloriesPerDay) {
-        Map<LocalDate, Integer> map = meals.stream().collect(Collectors.toMap(
-                item -> item.getDateTime().toLocalDate(),
-                UserMeal::getCalories,
-                (calories1, calories2) -> calories1 + calories2));
-
         return meals.stream()
                 .filter(item -> TimeUtil.isBetweenHalfOpen(item.getDateTime().toLocalTime(), startTime, endTime))
                 .map(item -> new UserMealWithExcess(item.getDateTime(), item.getDescription(), item.getCalories(),
-                        caloriesPerDay >= map.getOrDefault(item.getDateTime().toLocalDate(), 0)))
+                        caloriesPerDay >= item.getGeneralCalories(item.getDateTime().toLocalDate())))
                 .collect(Collectors.toList());
     }
 }
