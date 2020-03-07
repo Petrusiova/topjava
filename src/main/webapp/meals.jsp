@@ -6,6 +6,11 @@
     <title>Meals</title>
 </head>
 <body>
-<h1>${meals}</h1>
+<h2><a href="index.html">Home</a></h2>
+<ul>
+    <c:forEach var="meal" items="${meals}">
+        <li><c:out value="${meal}" /></li>
+    </c:forEach>
+</ul>
 </body>
 </html>

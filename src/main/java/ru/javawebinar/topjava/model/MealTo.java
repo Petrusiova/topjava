@@ -21,8 +21,8 @@ public class MealTo {
     @Override
     public String toString() {
         return "dateTime=" + dateTime.toLocalDate() + " " + dateTime.toLocalTime() +
-                ", description='" + description + '\'' +
+                ", description='" + description  +
                 ", calories=" + calories +
-                ", excess=" + excess + "\n";
+                ", excess=" + excess + "\n !";
     }
 }
