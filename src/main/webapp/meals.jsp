@@ -6,6 +6,10 @@
 <html>
 <head>
     <title>Meals</title>
+    <style>
+        .normal {color: green;}
+        .exceeded {color: red;}
+    </style>
 </head>
 <body>
 <h2><a href="index.html">Home</a></h2>
@@ -17,20 +21,11 @@
         <th style="width:30%">Калории</th>
     </tr>
     <c:forEach var="mealTo" items="${meals}">
-        <c:if test="${mealTo.excess eq true}">
-            <tr align="center" style="color: red">
+            <tr align="center" class="${mealTo.excess ? 'exceeded' : 'normal'}">
                 <td><c:out value="${mealTo.dateTime}"/></td>
                 <td><c:out value="${mealTo.description}"/></td>
                 <td><c:out value="${mealTo.calories}"/></td>
             </tr>
-        </c:if>
-        <c:if test="${mealTo.excess eq false}">
-            <tr align="center" style="color: green">
-                <td><c:out value="${mealTo.dateTime}"/></td>
-                <td><c:out value="${mealTo.description}"/></td>
-                <td><c:out value="${mealTo.calories}"/></td>
-            </tr>
-        </c:if>
     </c:forEach>
 </table>
 </body>
