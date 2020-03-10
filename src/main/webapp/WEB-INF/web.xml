@@ -16,7 +16,6 @@
         <url-pattern>/meals</url-pattern>
     </servlet-mapping>
 
-
     <servlet>
         <servlet-name>userServlet</servlet-name>
         <servlet-class>ru.javawebinar.topjava.web.UserServlet</servlet-class>
@@ -27,6 +26,16 @@
         <url-pattern>/users</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <display-name>CRUDServlet</display-name>
+        <servlet-name>CRUDServlet</servlet-name>
+        <servlet-class>ru.javawebinar.topjava.web.CRUDServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CRUDServlet</servlet-name>
+        <url-pattern>/CRUDServlet</url-pattern>
+    </servlet-mapping>
 
 
 </web-app>
