@@ -1,14 +1,18 @@
 package ru.javawebinar.topjava.repository.inmemory;
 
+import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Repository
 public class InMemoryMealRepository implements MealRepository {
     private Map<Integer, Meal> repository = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger(0);
@@ -35,12 +39,18 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id) {
-        return repository.get(id);
+        Meal currentMeal;
+        try {
+            currentMeal = repository.get(id);
+        } catch (NullPointerException e) {
+            throw new NotFoundException("No meal with id " + id);
+        }
+        return currentMeal;
     }
 
     @Override
     public Collection<Meal> getAll() {
-        return repository.values();
+        return new TreeSet<>(repository.values());
     }
 }
 

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
@@ -52,12 +53,21 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        for (Map.Entry<Integer, User> map : repository.entrySet()) {
-            User currentUser = map.getValue();
-            if (currentUser.getEmail().equals(email)) {
-                return currentUser;
-            }
+//        for (Map.Entry<Integer, User> map : repository.entrySet()) {
+//            User currentUser = map.getValue();
+//            if (currentUser.getEmail().equals(email)) {
+//                return currentUser;
+//            }
+//        }
+
+        User currentUser;
+        try {
+            currentUser = (User) repository.entrySet().stream()
+                    .filter(map -> map.getValue().getEmail().equals(email)).toArray()[0];
+        } catch (ArrayIndexOutOfBoundsException e){
+            throw new NotFoundException("No user with email: " + email);
         }
-        throw new NotFoundException("No user with email: " + email);
+        return currentUser;
+
     }
 }
