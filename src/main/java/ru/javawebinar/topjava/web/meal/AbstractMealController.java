@@ -4,7 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.to.MealTo;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.util.Collection;
@@ -17,14 +19,16 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 public abstract class AbstractMealController {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private int userId = SecurityUtil.authUserId();
+    private int caloriesPerDay = SecurityUtil.authUserCaloriesPerDay();
 
     @Autowired
     private MealService service;
 
-    public Collection<Meal> getAll() {
+    public Collection<MealTo> getAll() {
         log.info("getAll");
-        return service.getAll(userId).stream()
-                .filter(item -> item.getUserId() == userId).collect(Collectors.toCollection(TreeSet::new));
+        return MealsUtil.getTos(service.getAll(userId).stream()
+                .filter(item -> item.getUserId() == userId).collect(Collectors.toCollection(TreeSet::new)),
+                caloriesPerDay);
     }
 
     public Meal get(int id) {

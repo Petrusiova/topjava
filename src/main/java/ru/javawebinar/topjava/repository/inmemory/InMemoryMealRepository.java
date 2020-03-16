@@ -4,7 +4,6 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Collection;
 import java.util.Map;
@@ -39,13 +38,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id) {
-        Meal currentMeal;
-        try {
-            currentMeal = repository.get(id);
-        } catch (NullPointerException e) {
-            throw new NotFoundException("No meal with id " + id);
-        }
-        return currentMeal;
+        return repository.get(id);
     }
 
     @Override
