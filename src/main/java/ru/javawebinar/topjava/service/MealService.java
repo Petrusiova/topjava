@@ -6,8 +6,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.Collection;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
@@ -37,8 +36,10 @@ public class MealService {
     }
 
     public Collection<Meal> getAll(int userId) {
-        TreeSet<Meal> mealsSet = repository.getAll().stream()
-                .filter(item -> item.getUserId() == userId).collect(Collectors.toCollection(TreeSet::new));
+        ArrayList<Meal> mealsSet = repository.getAll().stream()
+                .filter(item -> item.getUserId() == userId)
+                .sorted(Comparator.comparing(Meal::getDateTime))
+                .collect(Collectors.toCollection(ArrayList::new));
         if (mealsSet.isEmpty()){
             throw new NotFoundException("Current user doesn't have any meal");
         }
