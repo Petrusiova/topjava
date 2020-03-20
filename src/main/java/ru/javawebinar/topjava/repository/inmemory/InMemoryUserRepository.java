@@ -3,17 +3,14 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.model.AbstractNamedEntity;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
@@ -31,11 +28,14 @@ public class InMemoryUserRepository implements UserRepository {
     public User save(User user) {
         log.info("save {}", user);
         if (user.isNew()) {
+            if (repository.values()
+                    .stream()
+                    .anyMatch(curUser -> curUser.getEmail().equals(user.getEmail()))){
+                throw new NotFoundException("User with this email already exists");
+            }
             user.setId(counter.incrementAndGet());
-            repository.put(user.getId(), user);
-            return repository.computeIfPresent(user.getId(), (id, oldMeal) -> user);
         }
-        return user;
+        return repository.merge(user.getId(), user, (oldVal, newVal) -> newVal);
     }
 
     @Override
@@ -47,20 +47,18 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return new ArrayList<>(new TreeSet<>(repository.values()));
+        Set<User> users = new TreeSet<>(Comparator.comparing(AbstractNamedEntity::getName));
+        users.addAll(repository.values());
+        return new ArrayList<>(users);
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        User currentUser;
-        try {
-            currentUser = (User) repository.entrySet().stream()
-                    .filter(map -> map.getValue().getEmail().equals(email)).toArray()[0];
-        } catch (ArrayIndexOutOfBoundsException e){
-            throw new NotFoundException("No user with email: " + email);
-        }
-        return currentUser;
-
+        return repository.values()
+                .stream()
+                .filter(curUser -> curUser.getEmail().equals(email))
+                .findAny()
+                .orElse(null);
     }
 }

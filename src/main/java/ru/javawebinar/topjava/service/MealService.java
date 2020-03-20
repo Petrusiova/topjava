@@ -33,7 +33,7 @@ public class MealService {
         return repository.getAll(userId);
     }
 
-    public void update(Meal meal, int userId) {
-        repository.save(meal, userId);
+    public Meal update(Meal meal, int userId) {
+        return repository.save(meal, userId);
     }
 }
