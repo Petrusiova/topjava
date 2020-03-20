@@ -7,9 +7,11 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
@@ -17,33 +19,44 @@ public class InMemoryMealRepository implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach(this::save);
+        MealsUtil.MEALS.forEach(MEAL -> save(MEAL, MEAL.getUserId()));
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             repository.put(meal.getId(), meal);
             return meal;
         }
         // handle case: update, but not present in storage
-        return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        return isUsersMeal(meal, userId) ?
+                repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal) : null;
     }
 
     @Override
-    public boolean delete(int id) {
-        return repository.remove(id) != null;
+    public boolean delete(int id, int userId) {
+        return isUsersMeal(repository.get(id), userId) && repository.remove(id) != null;
     }
 
     @Override
-    public Meal get(int id) {
-        return repository.get(id);
+    public Meal get(int id, int userId) {
+        Meal currentMeal = repository.get(id);
+        return isUsersMeal(currentMeal, userId) ? currentMeal : null;
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        return new TreeSet<>(repository.values());
+    public Collection<Meal> getAll(int userId) {
+        Set<Meal> meals = new TreeSet<>((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime()));
+        meals.addAll(repository.values()
+                .stream()
+                .filter(item -> isUsersMeal(item, userId))
+                .collect(Collectors.toSet()));
+        return meals;
+    }
+
+    private boolean isUsersMeal(Meal currentMeal, int userId){
+        return currentMeal.getUserId() == userId;
     }
 }
 
