@@ -12,24 +12,30 @@ public class DateTimeUtil {
         return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) <= 0;
     }
 
-    public static boolean isBetweenInclusiveDate(LocalDate lt, LocalDate startDate, LocalDate endDate) {
-        return lt.compareTo(startDate) >= 0 && lt.compareTo(endDate) <= 0;
-    }
+    public static <T> boolean filterByDateAndTime(Comparable<T> lt,
+                                                  Comparable<? super T> startDate,
+                                                  Comparable<? super T> endDate) {
+        Class<? extends Comparable> aClass = lt.getClass();
+        if (startDate == null) {
+            if (aClass == LocalDate.class){
+                startDate = (Comparable<? super T>) LocalDate.MIN;
+            } else {
+                if (aClass == LocalTime.class){
+                    startDate = (Comparable<? super T>) LocalTime.MIN;
+                }
+            }
+        }
+        if (endDate == null) {
+            if (aClass == LocalDate.class){
+                endDate = (Comparable<? super T>) LocalDate.MAX;
+            } else {
+                if (aClass == LocalTime.class){
+                    endDate = (Comparable<? super T>) LocalTime.MAX;
+                }
+            }
+        }
 
-    public static boolean isFromDateInclusive(LocalDate lt, LocalDate startDate) {
-        return lt.compareTo(startDate) >= 0;
-    }
-
-    public static boolean isTillDateInclusive(LocalDate lt, LocalDate endDate) {
-        return lt.compareTo(endDate) <= 0;
-    }
-
-    public static boolean isFromTimeInclusive(LocalTime lt, LocalTime startTime) {
-        return lt.compareTo(startTime) >= 0;
-    }
-
-    public static boolean isTillTimeInclusive(LocalTime lt, LocalTime endTime) {
-        return lt.compareTo(endTime) <= 0;
+        return lt.compareTo((T) startDate) >= 0 && lt.compareTo((T) endDate) <= 0;
     }
 
     public static String toString(LocalDateTime ldt) {

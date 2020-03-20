@@ -60,26 +60,14 @@ public class MealRestController {
     public Collection<MealTo> filterByDateAndTime(LocalDate startDate, LocalDate endDate,
                                                   LocalTime startTime, LocalTime endTime) {
         Collection<MealTo> all = getAll();
-        if (startDate != null) {
-            all = all.stream()
-                    .filter(item -> DateTimeUtil.isFromDateInclusive(item.getDate(), startDate))
-                    .collect(Collectors.toCollection(ArrayList::new));
-        }
-        if (endDate != null) {
-            all = all.stream()
-                    .filter(item -> DateTimeUtil.isTillDateInclusive(item.getDate(), endDate))
-                    .collect(Collectors.toCollection(ArrayList::new));
-        }
-        if (startTime != null) {
-            all = all.stream()
-                    .filter(item -> DateTimeUtil.isFromTimeInclusive(item.getTime(), startTime))
-                    .collect(Collectors.toCollection(ArrayList::new));
-        }
-        if (endTime != null) {
-            all = all.stream()
-                    .filter(item -> DateTimeUtil.isTillTimeInclusive(item.getTime(), endTime))
-                    .collect(Collectors.toCollection(ArrayList::new));
-        }
+
+        all = all.stream()
+                .filter(item -> DateTimeUtil.filterByDateAndTime(item.getDate(), startDate, endDate))
+                .collect(Collectors.toCollection(ArrayList::new));
+        all = all.stream()
+                .filter(item -> DateTimeUtil.filterByDateAndTime(item.getTime(), startTime, endTime))
+                .collect(Collectors.toCollection(ArrayList::new));
+
         return all;
     }
 }
