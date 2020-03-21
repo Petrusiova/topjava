@@ -3,10 +3,8 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import ru.javawebinar.topjava.model.AbstractNamedEntity;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,14 +26,9 @@ public class InMemoryUserRepository implements UserRepository {
     public User save(User user) {
         log.info("save {}", user);
         if (user.isNew()) {
-            if (repository.values()
-                    .stream()
-                    .anyMatch(curUser -> curUser.getEmail().equals(user.getEmail()))){
-                throw new NotFoundException("User with this email already exists");
-            }
             user.setId(counter.incrementAndGet());
         }
-        return repository.merge(user.getId(), user, (oldVal, newVal) -> newVal);
+        return repository.put(user.getId(), user);
     }
 
     @Override
@@ -47,7 +40,9 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        Set<User> users = new TreeSet<>(Comparator.comparing(AbstractNamedEntity::getName));
+        Set<User> users = new TreeSet<>((o1, o2) -> o1.getName().equals(o2.getName()) ?
+                o1.getEmail().compareTo(o2.getEmail()) :
+                o1.getName().compareTo(o2.getName()));
         users.addAll(repository.values());
         return new ArrayList<>(users);
     }

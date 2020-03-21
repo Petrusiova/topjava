@@ -7,15 +7,12 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
@@ -30,7 +27,7 @@ public class MealRestController {
         this.service = service;
     }
 
-    public Collection<MealTo> getAll() {
+    public List<MealTo> getAll() {
         log.info("getAll");
         return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()),
                 SecurityUtil.authUserCaloriesPerDay());
@@ -52,22 +49,26 @@ public class MealRestController {
         service.delete(id, SecurityUtil.authUserId());
     }
 
-    public Meal update(Meal meal, int userId) {
+    public Meal update(Meal meal) {
         log.info("update {} with id={}", meal, meal.getId());
         return service.update(meal, SecurityUtil.authUserId());
     }
 
-    public Collection<MealTo> filterByDateAndTime(LocalDate startDate, LocalDate endDate,
-                                                  LocalTime startTime, LocalTime endTime) {
-        Collection<MealTo> all = getAll();
+    public List<MealTo> filterByDateAndTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        if (startDate == null) startDate = LocalDate.MIN;
+        if (endDate == null) endDate = LocalDate.MAX;
+        if (startTime == null) startTime = LocalTime.MIN;
+        if (endTime == null) endTime = LocalTime.MAX;
 
-        all = all.stream()
-                .filter(item -> DateTimeUtil.filterByDateAndTime(item.getDate(), startDate, endDate))
-                .collect(Collectors.toCollection(ArrayList::new));
-        all = all.stream()
-                .filter(item -> DateTimeUtil.filterByDateAndTime(item.getTime(), startTime, endTime))
-                .collect(Collectors.toCollection(ArrayList::new));
 
-        return all;
+//        List<MealTo> result = new ArrayList<>();
+//        for (MealTo mealTo : all) {
+//            if (DateTimeUtil.isBetween(mealTo.getDate(), startDate, endDate)) {
+//                result.add(mealTo);
+//            }
+//        }
+
+        return MealsUtil.getFilteredTos(service.getAll(SecurityUtil.authUserId()),
+                SecurityUtil.authUserCaloriesPerDay(), startDate, endDate, startTime, endTime);
     }
 }

@@ -19,16 +19,12 @@ import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-
     private MealRepository repository;
-
-    private int userId;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         repository = new InMemoryMealRepository();
-        userId = SecurityUtil.authUserId();
     }
 
     @Override
@@ -41,7 +37,7 @@ public class MealServlet extends HttpServlet {
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")),
-                userId);
+                SecurityUtil.authUserId());
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         repository.save(meal, SecurityUtil.authUserId());
@@ -62,7 +58,8 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, userId) :
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "",
+                                1000, SecurityUtil.authUserId()) :
                         repository.get(getId(request), SecurityUtil.authUserId());
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
