@@ -60,14 +60,6 @@ public class MealRestController {
         if (startTime == null) startTime = LocalTime.MIN;
         if (endTime == null) endTime = LocalTime.MAX;
 
-
-//        List<MealTo> result = new ArrayList<>();
-//        for (MealTo mealTo : all) {
-//            if (DateTimeUtil.isBetween(mealTo.getDate(), startDate, endDate)) {
-//                result.add(mealTo);
-//            }
-//        }
-
         return MealsUtil.getFilteredTos(service.getAll(SecurityUtil.authUserId()),
                 SecurityUtil.authUserCaloriesPerDay(), startDate, endDate, startTime, endTime);
     }
