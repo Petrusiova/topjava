@@ -44,7 +44,7 @@ public class InMemoryMealRepository implements MealRepository {
         Map<Integer, Meal> map = generalRepository.get(userId);
         if (map != null && map.get(id) != null) {
             map.remove(id);
-            return true;
+            return map.get(id) == null;
         }
         return false;
     }
