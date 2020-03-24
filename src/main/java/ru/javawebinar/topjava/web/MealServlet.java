@@ -66,7 +66,7 @@ public class MealServlet extends HttpServlet {
             case "sort":
                 log.info("sort {}", request.getParameter("fromDate"));
 
-                request.setAttribute("meal",
+                request.setAttribute("meals",
                         mealRestController.filterByDateAndTime(
                                 LocalDate.parse(request.getParameter("fromDate")),
                                 LocalDate.parse(request.getParameter("toDate")),
