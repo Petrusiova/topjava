@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.repository.UserRepository;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
@@ -40,11 +41,10 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        Set<User> users = new TreeSet<>((o1, o2) -> o1.getName().equals(o2.getName()) ?
-                o1.getEmail().compareTo(o2.getEmail()) :
-                o1.getName().compareTo(o2.getName()));
-        users.addAll(repository.values());
-        return new ArrayList<>(users);
+        return repository.values()
+                .stream()
+                .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
+                .collect(Collectors.toList());
     }
 
     @Override
