@@ -17,6 +17,7 @@ DO $$
   BEGIN
     INSERT INTO meals (datetime, description, calories, user_id) VALUES
     (make_timestamp(2020, 1, 30, 10, 0, 0), 'Завтрак', 500, users_id),
+    (make_timestamp(2020, 1, 30, 13, 0, 0), 'Обед', 500, users_id),
     (make_timestamp(2020, 1, 30, 20, 0, 0), 'Ужин', 500, users_id),
     (make_timestamp(2020, 1, 31, 0, 0, 0), 'Еда на граничное значение', 100, users_id),
     (make_timestamp(2020, 1, 31, 10, 0, 0), 'Завтрак', 1000, users_id),

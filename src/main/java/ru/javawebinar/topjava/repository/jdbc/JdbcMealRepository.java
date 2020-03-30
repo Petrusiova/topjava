@@ -29,7 +29,6 @@ public class JdbcMealRepository implements MealRepository {
     private final SimpleJdbcInsert insertMeal;
 
     @Autowired
-
     public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("meals")
@@ -52,7 +51,7 @@ public class JdbcMealRepository implements MealRepository {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET dateTime=:dateTime, description=:description, calories=:calories where user_id=:user_id", map) == 0) {
+                "UPDATE meals SET dateTime=:dateTime, description=:description, calories=:calories where user_id=:user_id and id=:id", map) == 0) {
             return null;
         }
         return meal;
@@ -71,11 +70,19 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals where user_id=? ORDER BY datetime", ROW_MAPPER, userId);
+        return jdbcTemplate.query("SELECT * FROM meals where user_id=? ORDER BY datetime DESC", ROW_MAPPER, userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        return null;
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("startDate", startDate.toLocalDate().toString())
+                .addValue("endDate", endDate.toLocalDate().toString())
+                .addValue("user_Id", userId);
+
+        List<Meal> meals = namedParameterJdbcTemplate.query("SELECT * FROM meals" +
+                " WHERE to_char(datetime, 'yyyy-MM-dd') between :startDate and :endDate" +
+                " and user_id=:user_Id ORDER BY datetime desc", map, ROW_MAPPER);
+        return meals;
     }
 }
