@@ -80,9 +80,8 @@ public class JdbcMealRepository implements MealRepository {
                 .addValue("endDate", endDate.toLocalDate().toString())
                 .addValue("user_Id", userId);
 
-        List<Meal> meals = namedParameterJdbcTemplate.query("SELECT * FROM meals" +
+        return namedParameterJdbcTemplate.query("SELECT * FROM meals" +
                 " WHERE to_char(datetime, 'yyyy-MM-dd') between :startDate and :endDate" +
                 " and user_id=:user_Id ORDER BY datetime desc", map, ROW_MAPPER);
-        return meals;
     }
 }
