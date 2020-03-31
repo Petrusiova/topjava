@@ -1,21 +1,19 @@
 package ru.javawebinar.topjava;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.Role;
-import ru.javawebinar.topjava.model.User;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class MealTestData {
-    public static final int MEAL_ID = START_SEQ;
+    public static final int USER_MEAL_ID = START_SEQ + 2;
     public static final int USER_ID = START_SEQ;
+    public static final int ADMIN_MEAL_ID = START_SEQ;
+    public static final int ADMIN_ID = START_SEQ + 1;
 
     public static final Meal MEAL_1 = new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500);
     public static final Meal MEAL_2 = new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000);
@@ -30,27 +28,26 @@ public class MealTestData {
 
 
     public static Meal getNew() {
-//        return new Meal(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
-        return null;
+        return new Meal(LocalDateTime.now(), "testMeal", 150);
     }
 
-    public static User getUpdated() {
-//        User updated = new User(USER);
-//        updated.setName("UpdatedName");
-//        updated.setCaloriesPerDay(330);
-//        return updated;
-        return null;
+    public static Meal getUpdated() {
+        Meal updated = new Meal(MealTestData.MEAL_1);
+        updated.setDateTime(LocalDateTime.now());
+        updated.setDescription("updated description");
+        updated.setCalories(updated.getCalories() + 100);
+        return updated;
     }
 
     public static void assertMatch(Meal actual, Meal expected) {
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "registered", "roles");
+        assertThat(actual).isEqualToIgnoringGivenFields(expected, "id");
     }
 
-    public static void assertMatch(Iterable<User> actual, User... expected) {
+    public static void assertMatch(Iterable<Meal> actual, Meal... expected) {
         assertMatch(actual, Arrays.asList(expected));
     }
 
-    public static void assertMatch(Iterable<User> actual, Iterable<User> expected) {
-        assertThat(actual).usingElementComparatorIgnoringFields("registered", "roles").isEqualTo(expected);
+    public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
+        assertThat(actual).usingElementComparatorIgnoringFields("id").isEqualTo(expected);
     }
 }
