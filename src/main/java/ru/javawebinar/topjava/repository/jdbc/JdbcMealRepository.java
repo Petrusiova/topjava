@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -71,14 +71,9 @@ public class JdbcMealRepository implements MealRepository {
     }
 
     @Override
-    public List<Meal> getBetweenHalfOpen(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("startDate", startDate.toLocalDate().toString())
-                .addValue("endDate", endDate.toLocalDate().toString())
-                .addValue("user_Id", userId);
-
-        return namedParameterJdbcTemplate.query("SELECT * FROM meals" +
-                " WHERE to_char(datetime, 'yyyy-MM-dd') between :startDate and :endDate" +
-                " and user_id=:user_Id ORDER BY datetime desc", map, ROW_MAPPER);
+    public List<Meal> getBetweenHalfOpen(LocalDate startDate, LocalDate endDate, int userId) {
+        return jdbcTemplate.query("SELECT * FROM meals" +
+                " WHERE to_char(datetime, 'yyyy-MM-dd') >= ? and to_char(datetime, 'yyyy-MM-dd') < ?" +
+                " and user_id=? ORDER BY datetime desc", ROW_MAPPER, startDate.toString(), endDate.toString(), userId);
     }
 }

@@ -10,6 +10,7 @@ import ru.javawebinar.topjava.util.Util;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collections;
@@ -66,8 +67,8 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return getAllFiltered(userId, meal -> Util.isBetweenHalfOpen(meal.getDateTime(), startDateTime, endDateTime));
+    public List<Meal> getBetweenHalfOpen(LocalDate startDateTime, LocalDate endDateTime, int userId) {
+        return getAllFiltered(userId, meal -> Util.isBetweenHalfOpen(meal.getDate(), startDateTime, endDateTime));
     }
 
     @Override
