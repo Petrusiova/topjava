@@ -11,25 +11,15 @@ INSERT INTO user_roles (role, user_id) VALUES
   ('ROLE_USER', 100000),
   ('ROLE_ADMIN', 100001);
 
-DO $$
-  DECLARE
-    users_id INTEGER := (select id from users where name = 'User');
-  BEGIN
     INSERT INTO meals (datetime, description, calories, user_id) VALUES
-    (make_timestamp(2020, 1, 30, 10, 0, 0), 'Завтрак', 500, users_id),
-    (make_timestamp(2020, 1, 30, 13, 0, 0), 'Обед', 500, users_id),
-    (make_timestamp(2020, 1, 30, 20, 0, 0), 'Ужин', 500, users_id),
-    (make_timestamp(2020, 1, 31, 0, 0, 0), 'Еда на граничное значение', 100, users_id),
-    (make_timestamp(2020, 1, 31, 10, 0, 0), 'Завтрак', 1000, users_id),
-    (make_timestamp(2020, 1, 31, 13, 0, 0), 'Обед', 500, users_id),
-    (make_timestamp(2020, 1, 31, 20, 0, 0), 'Ужин', 410, users_id);
-  END $$;
+    ('2020-01-30 10:00', 'Завтрак', 500, 100000),
+    ('2020-01-30 13:00', 'Обед', 500, 100000),
+    ('2020-01-30 20:00', 'Ужин', 500, 100000),
+    ('2020-01-31 00:00', 'Еда на граничное значение', 100, 100000),
+    ('2020-01-31 10:00', 'Завтрак', 1000, 100000),
+    ('2020-01-31 13:00', 'Обед', 500, 100000),
+    ('2020-01-31 20:00', 'Ужин', 410, 100000);
 
-DO $$
-  DECLARE
-    admin_id INTEGER := (select id from users where name = 'Admin');
-  BEGIN
     INSERT INTO meals (datetime, description, calories, user_id) VALUES
-    (make_timestamp(2015, 6, 1, 14, 0, 0), 'Админ ланч', 510, admin_id),
-    (make_timestamp(2015, 6, 1, 21, 0, 0), 'Админ ужин', 1500, admin_id);
-  END $$;
+    ('2015-06-01 14:00', 'Админ ланч', 510, 100001),
+    ('2015-06-01 21:00', 'Админ ужин', 1500, 100001);

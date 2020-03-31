@@ -32,6 +32,5 @@ CREATE TABLE meals
   description     VARCHAR,
   calories        INTEGER,
   user_id         INTEGER NOT NULL,
-  CONSTRAINT meals_roles_idx UNIQUE (user_id, id),
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
