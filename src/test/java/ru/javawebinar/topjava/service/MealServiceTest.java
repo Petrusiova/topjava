@@ -62,7 +62,7 @@ public class MealServiceTest {
     public void getBetweenHalfOpen() {
         service.create(getNew(), USER_ID);
         List<Meal> all = service.getAll(USER_ID);
-        Assert.assertEquals(all, service.getBetweenHalfOpen(null, null, USER_ID));
+        assertMatch(all, service.getBetweenHalfOpen(null, null, USER_ID));
 
         LocalDate from = LocalDate.of(2020, Month.JANUARY, 31);
         List<Meal> onlyFrom = service.getBetweenHalfOpen(from, null, USER_ID);
@@ -99,7 +99,7 @@ public class MealServiceTest {
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
-        Assert.assertEquals(service.get(updated.getId(), USER_ID), updated);
+        assertMatch(service.get(updated.getId(), USER_ID), updated);
     }
 
     @Test(expected = NotFoundException.class)
@@ -113,9 +113,7 @@ public class MealServiceTest {
     public void create() {
         Meal newMeal = getNew();
         Meal created = service.create(newMeal, USER_ID);
-        Integer newId = created.getId();
-        newMeal.setId(newId);
-        Assert.assertEquals(newMeal, created);
-        Assert.assertEquals(newMeal, service.get(newId, USER_ID));
+        assertMatch(newMeal, created);
+        assertMatch(newMeal, service.get(created.getId(), USER_ID));
     }
 }
