@@ -12,6 +12,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.persistence.NoResultException;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -35,7 +36,11 @@ public class MealServiceTest {
     @Test
     public void delete() throws Exception {
         service.delete(MEAL1_ID, USER_ID);
-        Assert.assertNull(repository.get(MEAL1_ID, USER_ID));
+        try {
+            Assert.assertNull(repository.get(MEAL1_ID, USER_ID));
+        } catch (NotFoundException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     @Test(expected = NotFoundException.class)
