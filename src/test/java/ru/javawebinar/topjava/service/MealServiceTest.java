@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
-import org.junit.rules.RuleChain;
 import org.junit.rules.Stopwatch;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
@@ -20,8 +19,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static ru.javawebinar.topjava.MealTestData.*;
