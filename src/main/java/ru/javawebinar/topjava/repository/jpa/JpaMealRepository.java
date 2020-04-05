@@ -53,7 +53,7 @@ public class JpaMealRepository implements MealRepository {
                     .setParameter("userId", userId)
                     .getSingleResult();
         } catch (NoResultException e){
-            throw new NotFoundException(e.toString());
+            return null;
         }
     }
 

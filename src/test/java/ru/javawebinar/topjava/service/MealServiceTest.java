@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.service;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.Stopwatch;
-import org.junit.rules.TestName;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,10 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -33,8 +34,22 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
-    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
-    private static ArrayList<String> logs = new ArrayList<>();
+    private static final Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
+    private static Set<String> logs = new LinkedHashSet<>();
+    {
+        logs.add((char) 27 + "[32m" + String.format("\n%30s%11s", "TEST NAME", "TEST TIME")  + (char)27 + "[0m");
+    }
+
+
+    private static void logInfo(Description description, String status, long nanos) {
+        String testName = description.getMethodName();
+        logger.info(String.format("Test %s %s, spent %d microseconds",
+                testName, status, TimeUnit.NANOSECONDS.toMicros(nanos)));
+
+        String value = String.format("\n%30s%5d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+        logs.add((char) 27 + "[32m" + value  + (char)27 + "[0m");
+
+    }
 
     @Autowired
     private MealService service;
@@ -43,25 +58,38 @@ public class MealServiceTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-    @Rule
-    public TestName testName = new TestName();
-    @Rule
-    public Stopwatch stopwatch = new Stopwatch();
 
-    @After
-    public void printTestTime(){
-        long testTime = stopwatch.runtime(MILLISECONDS);
-        log.info("THIS TEST TIME IS {} ms", testTime);
-        logs.add("METHOD NAME: " + testName.getMethodName() + " TIME: " + testTime + " ms");
-    }
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void succeeded(long nanos, Description description) {
+            logInfo(description, "succeeded", nanos);
+        }
+
+        @Override
+        protected void failed(long nanos, Throwable e, Description description) {
+            logInfo(description, "failed", nanos);
+        }
+
+        @Override
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            logInfo(description, "skipped", nanos);
+        }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            logInfo(description, "finished", nanos);
+        }
+    };
 
     @AfterClass
-    public static void printTestNameAndTime(){
-        log.info(logs.toString());
+    public static void printTestNameAndTime() {
+        logger.info(logs.toString());
     }
 
     @Test
     public void delete() throws Exception {
+        Assert.assertNotNull(MEAL1_ID);
         service.delete(MEAL1_ID, USER_ID);
         try {
             Assert.assertNull(repository.get(MEAL1_ID, USER_ID));
