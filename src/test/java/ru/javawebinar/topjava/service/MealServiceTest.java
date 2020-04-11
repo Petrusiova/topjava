@@ -35,19 +35,19 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class MealServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
-    private static Set<String> logs = new LinkedHashSet<>();
+    private static StringBuilder logs = new StringBuilder();
     {
-        logs.add((char) 27 + "[32m" + String.format("\n%30s%11s", "TEST NAME", "TEST TIME")  + (char)27 + "[0m");
+        logs.append((char) 27 + "[32m").append(String.format("\n%30s%11s", "TEST NAME", "TEST TIME")).append((char) 27).append("[0m");
     }
 
 
     private static void logInfo(Description description, String status, long nanos) {
         String testName = description.getMethodName();
         logger.info(String.format("Test %s %s, spent %d microseconds",
-                testName, status, TimeUnit.NANOSECONDS.toMicros(nanos)));
+                testName, status, TimeUnit.NANOSECONDS.toMillis(nanos)));
 
         String value = String.format("\n%30s%5d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
-        logs.add((char) 27 + "[32m" + value  + (char)27 + "[0m");
+        logs.append((char) 27 + "[32m").append(value).append((char) 27).append("[0m");
 
     }
 
@@ -62,21 +62,6 @@ public class MealServiceTest {
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
-        protected void succeeded(long nanos, Description description) {
-            logInfo(description, "succeeded", nanos);
-        }
-
-        @Override
-        protected void failed(long nanos, Throwable e, Description description) {
-            logInfo(description, "failed", nanos);
-        }
-
-        @Override
-        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-            logInfo(description, "skipped", nanos);
-        }
-
-        @Override
         protected void finished(long nanos, Description description) {
             logInfo(description, "finished", nanos);
         }
@@ -89,13 +74,9 @@ public class MealServiceTest {
 
     @Test
     public void delete() throws Exception {
-        Assert.assertNotNull(MEAL1_ID);
         service.delete(MEAL1_ID, USER_ID);
-        try {
-            Assert.assertNull(repository.get(MEAL1_ID, USER_ID));
-        } catch (NotFoundException e) {
-            System.err.println(e.getMessage());
-        }
+        Assert.assertNull(repository.get(MEAL1_ID, USER_ID));
+
     }
 
     @Test
