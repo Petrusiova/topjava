@@ -18,8 +18,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -41,10 +39,10 @@ public class MealServiceTest {
     }
 
 
-    private static void logInfo(Description description, String status, long nanos) {
+    private static void logInfo(Description description, long nanos) {
         String testName = description.getMethodName();
         logger.info(String.format("Test %s %s, spent %d microseconds",
-                testName, status, TimeUnit.NANOSECONDS.toMillis(nanos)));
+                testName, "finished", TimeUnit.NANOSECONDS.toMillis(nanos)));
 
         String value = String.format("\n%30s%5d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
         logs.append((char) 27 + "[32m").append(value).append((char) 27).append("[0m");
@@ -63,7 +61,7 @@ public class MealServiceTest {
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            logInfo(description, "finished", nanos);
+            logInfo(description, nanos);
         }
     };
 
