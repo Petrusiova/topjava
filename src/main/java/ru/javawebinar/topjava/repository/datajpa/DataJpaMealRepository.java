@@ -18,12 +18,7 @@ public class DataJpaMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        meal.setUser(crudRepository.getUserById(userId));
-        Integer mealId = meal.getId();
-        if (mealId == null || crudRepository.get(mealId, userId) != null) {
-            return crudRepository.save(meal);
-        }
-        return null;
+        return crudRepository.save(meal, userId);
     }
 
     @Override

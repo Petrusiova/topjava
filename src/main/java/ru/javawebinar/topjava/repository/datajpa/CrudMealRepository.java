@@ -31,4 +31,10 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
 
     @Query("SELECT m FROM Meal m WHERE m.id=:id and m.user.id=:userId")
     Meal get(@Param("id") int id, @Param("userId") int userId);
+
+    default Meal save(Meal meal, int userId){
+        meal.setUser(getUserById(userId));
+        Integer mealId = meal.getId();
+        return mealId == null || get(mealId, userId) != null ? save(meal) : null;
+    }
 }
