@@ -4,6 +4,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static ru.javawebinar.topjava.Profiles.*;
 
-@ActiveProfiles(profiles = {JDBC, POSTGRES_DB})
+@ActiveProfiles(JDBC)
 public class JdbcUserServiceTest extends UserServiceTest{
 }

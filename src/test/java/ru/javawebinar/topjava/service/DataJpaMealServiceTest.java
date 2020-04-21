@@ -4,7 +4,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static ru.javawebinar.topjava.Profiles.*;
 
-@ActiveProfiles(profiles = {DATAJPA, POSTGRES_DB})
+@ActiveProfiles(DATAJPA)
 public class DataJpaMealServiceTest extends MealServiceTest {
 
     
