@@ -5,9 +5,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.service.UserServiceTest;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
 
@@ -33,7 +33,12 @@ public class DataJpaUserServiceTest extends UserServiceTest {
 
     @Test
     public void getWrongUser() {
-        Assert.assertThrows(NotFoundException.class,
-                () -> service.userWithMeal(-150));
+        Assert.assertNull(service.userWithMeal(-150));
+    }
+
+    @Test
+    public void getUserWithoutMeals(){
+        User user = service.create(getNew());
+        Assert.assertNull(service.userWithMeal(user.getId()));
     }
 }

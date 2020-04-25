@@ -62,6 +62,6 @@ public class UserService {
             checkNotFoundWithId(meals.get(0).getUser(), userId);
             return meals;
         }
-        throw new NotFoundException("Cannot find meal of user with id: " + userId);
+        return null;
     }
 }
