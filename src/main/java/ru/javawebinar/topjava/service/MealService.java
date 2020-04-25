@@ -49,10 +49,6 @@ public class MealService {
         return repository.save(meal, userId);
     }
 
-    public User userWithMeal(int userId){
-        return repository.userWithMeal(userId);
-    }
-
     public Meal mealWithUser(int id, int userId){
         return repository.mealWithUser(id, userId);
     }

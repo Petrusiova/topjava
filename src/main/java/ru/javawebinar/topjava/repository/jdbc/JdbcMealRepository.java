@@ -25,9 +25,9 @@ public abstract class JdbcMealRepository implements MealRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    protected final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private final SimpleJdbcInsert insertMeal;
+    protected final SimpleJdbcInsert insertMeal;
 
     @Autowired
     public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -40,28 +40,7 @@ public abstract class JdbcMealRepository implements MealRepository {
     }
 
     @Override
-    public Meal save(Meal meal, int userId) {
-        MapSqlParameterSource map = new MapSqlParameterSource()
-                .addValue("id", meal.getId())
-                .addValue("description", meal.getDescription())
-                .addValue("calories", meal.getCalories())
-                .addValue("date_time", meal.getDateTime())
-                .addValue("user_id", userId);
-
-        if (meal.isNew()) {
-            Number newId = insertMeal.executeAndReturnKey(map);
-            meal.setId(newId.intValue());
-        } else {
-            if (namedParameterJdbcTemplate.update("" +
-                            "UPDATE meals " +
-                            "   SET description=:description, calories=:calories, date_time=:date_time " +
-                            " WHERE id=:id AND user_id=:user_id"
-                    , map) == 0) {
-                return null;
-            }
-        }
-        return meal;
-    }
+    public abstract Meal save(Meal meal, int userId);
 
     @Override
     public boolean delete(int id, int userId) {
@@ -86,5 +65,27 @@ public abstract class JdbcMealRepository implements MealRepository {
         return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id=?  AND date_time >=  ? AND date_time < ? ORDER BY date_time DESC",
                 ROW_MAPPER, userId, Timestamp.valueOf(startDateTime), Timestamp.valueOf(endDateTime));
+    }
+
+    public Meal saveMethod(Meal meal, MapSqlParameterSource map, int userId) {
+
+        map.addValue("id", meal.getId())
+                .addValue("user_id", userId)
+                .addValue("description", meal.getDescription())
+                .addValue("calories", meal.getCalories());
+
+        if (meal.isNew()) {
+            Number newId = insertMeal.executeAndReturnKey(map);
+            meal.setId(newId.intValue());
+        } else {
+            if (namedParameterJdbcTemplate.update("" +
+                            "UPDATE meals " +
+                            "   SET description=:description, calories=:calories, date_time=:date_time " +
+                            " WHERE id=:id AND user_id=:user_id"
+                    , map) == 0) {
+                return null;
+            }
+        }
+        return meal;
     }
 }

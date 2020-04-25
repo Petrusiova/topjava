@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.repository.datajpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDateTime;
@@ -46,16 +45,6 @@ public class DataJpaMealRepository implements MealRepository {
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         return crudMealRepository.getBetweenHalfOpen(startDateTime, endDateTime, userId);
-    }
-
-    @Override
-    public User userWithMeal(int userId){
-        User user = crudUserRepository.findById(userId).orElse(null);
-        List<Meal> meals = crudMealRepository.getAll(userId);
-        if (meals != null) {
-            user.setMeals(meals);
-        }
-        return user;
     }
 
     @Override
