@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,18 +11,14 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ru.javawebinar.topjava.Profiles.JDBC;
-
-@Profile(JDBC)
 public abstract class JdbcMealRepository implements MealRepository {
 
-    private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
+    protected static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
-    private final JdbcTemplate jdbcTemplate;
+    protected final JdbcTemplate jdbcTemplate;
 
     protected final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -64,7 +59,7 @@ public abstract class JdbcMealRepository implements MealRepository {
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id=?  AND date_time >=  ? AND date_time < ? ORDER BY date_time DESC",
-                ROW_MAPPER, userId, Timestamp.valueOf(startDateTime), Timestamp.valueOf(endDateTime));
+                ROW_MAPPER, userId, startDateTime, endDateTime);
     }
 
     public Meal saveMethod(Meal meal, MapSqlParameterSource map, int userId) {
