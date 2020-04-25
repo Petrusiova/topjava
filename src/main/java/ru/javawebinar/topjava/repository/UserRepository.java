@@ -1,9 +1,10 @@
 package ru.javawebinar.topjava.repository;
 
-import ru.javawebinar.topjava.model.*;
+import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
-import java.util.Map;
 
 public interface UserRepository {
     // null if not found, when updated
@@ -20,7 +21,7 @@ public interface UserRepository {
 
     List<User> getAll();
 
-    default List<Map<User, Meal>>  userWithMeal(int userId){
-        return null;
+    default List<Meal> userWithMeal(int userId){
+        throw new NotFoundException("Do not call this method when active profile is not dataJpa");
     }
 }

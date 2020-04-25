@@ -3,14 +3,11 @@ package ru.javawebinar.topjava.repository.datajpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.TwinEntity;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class DataJpaUserRepository implements UserRepository {
@@ -48,8 +45,7 @@ public class DataJpaUserRepository implements UserRepository {
     }
 
     @Override
-    public List<Map<User, Meal>>  userWithMeal(int userId) {
-        List<Map<User, Meal>> list = crudUserRepository.userWithMeal(userId);
-        return list.size() > 0 ? list : null;
+    public List<Meal> userWithMeal(int userId) {
+        return crudUserRepository.userWithMeal(userId);
     }
 }

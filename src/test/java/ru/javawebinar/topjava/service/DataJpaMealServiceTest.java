@@ -27,12 +27,12 @@ public class DataJpaMealServiceTest extends MealServiceTest {
     @Test
     public void getMealWithWrongUser() {
         Assert.assertThrows(NotFoundException.class,
-                () -> service.get(MEAL1_ID, ADMIN_ID));
+                () -> service.mealWithUser(MEAL1_ID, ADMIN_ID));
     }
 
     @Test
     public void getWrongMealWithUser() {
         Assert.assertThrows(NotFoundException.class,
-                () -> service.get(-150, ADMIN_ID));
+                () -> service.mealWithUser(-150, ADMIN_ID));
     }
 }

@@ -50,6 +50,6 @@ public class MealService {
     }
 
     public Meal mealWithUser(int id, int userId){
-        return repository.mealWithUser(id, userId);
+        return checkNotFoundWithId(repository.mealWithUser(id, userId), id);
     }
 }

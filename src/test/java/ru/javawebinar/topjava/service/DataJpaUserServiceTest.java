@@ -4,16 +4,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
-import ru.javawebinar.topjava.UserTestData;
-import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.*;
+import java.util.List;
 
-import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.Profiles.*;
+import static ru.javawebinar.topjava.MealTestData.MEALS;
+import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
+import static ru.javawebinar.topjava.Profiles.DATAJPA;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 @ActiveProfiles(DATAJPA)
@@ -24,13 +22,11 @@ public class DataJpaUserServiceTest extends UserServiceTest {
 
     @Test
     public void getUserWithMeal() {
-        List<Map<User, Meal>> list = service.userWithMeal(USER_ID);
-        Set<AbstractBaseEntity> values = new HashSet<>();
-        list.forEach(item -> values.addAll(item.values()));
-
-        Assert.assertTrue(values.contains(USER));
-        values.remove(USER);
-        Assert.assertTrue(values.containsAll(MEALS));
+        List<Meal> list = service.userWithMeal(USER_ID);
+        list.forEach(item ->
+            USER_MATCHER.assertMatch(item.getUser(), USER)
+        );
+        MEAL_MATCHER.assertMatch(list, MEALS);
     }
 
     @Test
