@@ -1,10 +1,12 @@
-package ru.javawebinar.topjava.service;
+package ru.javawebinar.topjava.service.dataJpa;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.service.UserServiceTest;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
