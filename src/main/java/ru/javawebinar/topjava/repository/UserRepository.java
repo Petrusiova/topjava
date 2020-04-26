@@ -21,7 +21,7 @@ public interface UserRepository {
 
     List<User> getAll();
 
-    default List<Meal> userWithMeal(int userId){
-        throw new NotFoundException("Do not call this method when active profile is not dataJpa");
+    default User userWithMeal(int userId){
+        throw new UnsupportedOperationException();
     }
 }

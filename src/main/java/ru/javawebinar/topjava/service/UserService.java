@@ -56,12 +56,7 @@ public class UserService {
         checkNotFoundWithId(repository.save(user), user.getId());
     }
 
-    public List<Meal> userWithMeal(int userId) {
-        List<Meal> meals = repository.userWithMeal(userId);
-        if (meals.size() > 0) {
-            checkNotFoundWithId(meals.get(0).getUser(), userId);
-            return meals;
-        }
-        return null;
+    public User userWithMeal(int userId) {
+        return checkNotFoundWithId(repository.userWithMeal(userId), userId);
     }
 }
