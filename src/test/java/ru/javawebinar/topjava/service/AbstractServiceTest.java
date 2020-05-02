@@ -1,10 +1,13 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -14,6 +17,7 @@ import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.TimingRules;
 
 import static org.junit.Assert.assertThrows;
+import static ru.javawebinar.topjava.Profiles.JDBC;
 import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 
 @ContextConfiguration({
@@ -25,6 +29,9 @@ import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 abstract public class AbstractServiceTest {
 
+    @Autowired
+    private Environment environment;
+
     @ClassRule
     public static ExternalResource summary = TimingRules.SUMMARY;
 
@@ -33,6 +40,7 @@ abstract public class AbstractServiceTest {
 
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
     public <T extends Throwable> void validateRootCause(Runnable runnable, Class<T> exceptionClass) {
+        Assume.assumeTrue(isJdbc());
         assertThrows(exceptionClass, () -> {
             try {
                 runnable.run();
@@ -40,5 +48,9 @@ abstract public class AbstractServiceTest {
                 throw getRootCause(e);
             }
         });
+    }
+
+    protected boolean isJdbc() {
+        return !environment.acceptsProfiles(JDBC);
     }
 }
