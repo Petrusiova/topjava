@@ -40,7 +40,7 @@ abstract public class AbstractServiceTest {
 
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778
     public <T extends Throwable> void validateRootCause(Runnable runnable, Class<T> exceptionClass) {
-        Assume.assumeTrue(isJdbc());
+        Assume.assumeFalse(isJdbc());
         assertThrows(exceptionClass, () -> {
             try {
                 runnable.run();
@@ -51,6 +51,6 @@ abstract public class AbstractServiceTest {
     }
 
     protected boolean isJdbc() {
-        return !environment.acceptsProfiles(JDBC);
+        return environment.acceptsProfiles(JDBC);
     }
 }
