@@ -51,12 +51,11 @@ public class JdbcUserRepository implements UserRepository {
             batchUpdateUser(List.of(user));
         }
         Set<Role> roles = user.getRoles();
-        if (roles.size() > 0) {
-            jdbcTemplate.update("delete from user_roles where user_id = ?", user.getId());
-            for (Role role : roles) {
-                batchUpdateRole(List.of(user), role);
-            }
+        jdbcTemplate.update("delete from user_roles where user_id = ?", user.getId());
+        for (Role role : roles) {
+            batchUpdateRole(List.of(user), role);
         }
+
         return user;
     }
 
