@@ -7,6 +7,9 @@ import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.NoOpCacheManager;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -28,6 +31,11 @@ import static ru.javawebinar.topjava.util.ValidationUtil.getRootCause;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 abstract public class AbstractServiceTest {
+
+    @Bean
+    public CacheManager cacheManager() {
+        return new NoOpCacheManager();
+    }
 
     @Autowired
     private Environment environment;
