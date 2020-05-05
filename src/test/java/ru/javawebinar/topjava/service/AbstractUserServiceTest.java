@@ -44,6 +44,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     public void create() throws Exception {
         User newUser = getNew();
+        newUser.addRole(Role.ROLE_ADMIN);
         User created = service.create(newUser);
         Integer newId = created.getId();
         newUser.setId(newId);
@@ -57,8 +58,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     public void delete() throws Exception {
-        service.delete(USER_ID);
-        Assert.assertNull(repository.get(USER_ID));
+        service.delete(ADMIN_ID);
+        Assert.assertNull(repository.get(ADMIN_ID));
     }
 
     @Test(expected = NotFoundException.class)
@@ -68,8 +69,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void get() throws Exception {
-        User user = service.get(USER_ID);
-        USER_MATCHER.assertMatch(user, USER);
+        User user = service.get(ADMIN_ID);
+        USER_MATCHER.assertMatch(user, ADMIN);
     }
 
     @Test(expected = NotFoundException.class)
@@ -78,14 +79,21 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void getByEmail() throws Exception {
+    public void getUserByEmail() throws Exception {
         User user = service.getByEmail("user@yandex.ru");
         USER_MATCHER.assertMatch(user, USER);
     }
 
     @Test
+    public void getAdminByEmail() throws Exception {
+        User user = service.getByEmail("admin@gmail.com");
+        USER_MATCHER.assertMatch(user, ADMIN);
+    }
+
+    @Test
     public void update() throws Exception {
         User updated = getUpdated();
+        updated.addRole(Role.ROLE_ADMIN);
         service.update(updated);
         USER_MATCHER.assertMatch(service.get(USER_ID), updated);
     }
