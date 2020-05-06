@@ -46,57 +46,38 @@ public class JdbcUserRepository implements UserRepository {
     @Transactional
     public User save(@Valid User user) {
         ValidationUtil.validate(user);
+
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
         } else {
-            batchUpdateUser(List.of(user));
+            if (namedParameterJdbcTemplate.update(
+                    "UPDATE users SET name=:name, email=:email, password=:password, " +
+                            "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id",
+                    parameterSource) == 0) {
+                return null;
+            }
+            jdbcTemplate.update("delete from user_roles where user_id = ?", user.getId());
         }
-        Set<Role> roles = user.getRoles();
-        jdbcTemplate.update("delete from user_roles where user_id = ?", user.getId());
-        for (Role role : roles) {
-            batchUpdateRole(List.of(user), role);
-        }
-
+        List<Role> roles = new ArrayList<>();
+        roles.addAll(user.getRoles());
+        batchUpdateRole(user, roles);
         return user;
     }
 
-    public int[] batchUpdateUser(List<User> users) {
-        return this.jdbcTemplate.batchUpdate(
-                "update users set id = ?, name = ?, email = ?, password = ?, registered = ?, enabled =?, calories_per_day = ? where id = ?",
-                new BatchPreparedStatementSetter() {
-
-                    public void setValues(PreparedStatement ps, int i)
-                            throws SQLException {
-                        ps.setInt(1, users.get(i).getId());
-                        ps.setString(2, users.get(i).getName());
-                        ps.setString(3, users.get(i).getEmail());
-                        ps.setString(4, users.get(i).getPassword());
-                        ps.setObject(5, users.get(i).getRegistered());
-                        ps.setBoolean(6, users.get(i).isEnabled());
-                        ps.setInt(7, users.get(i).getCaloriesPerDay());
-                        ps.setInt(8, users.get(i).getId());
-                    }
-
-                    public int getBatchSize() {
-                        return 1;
-                    }
-                });
-    }
-
-    public int[] batchUpdateRole(List<User> users, Role role) {
+    public int[] batchUpdateRole(User user, List<Role> roles) {
         return this.jdbcTemplate.batchUpdate(
                 "insert into user_roles  values (?, ?)",
                 new BatchPreparedStatementSetter() {
                     public void setValues(PreparedStatement ps, int i)
                             throws SQLException {
-                        ps.setInt(1, users.get(i).getId());
-                        ps.setString(2, role.name());
+                        ps.setInt(1, user.getId());
+                        ps.setString(2, roles.get(i).name());
                     }
 
                     public int getBatchSize() {
-                        return 1;
+                        return roles.size();
                     }
                 });
     }
