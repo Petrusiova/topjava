@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import javax.validation.*;
 import java.sql.PreparedStatement;
@@ -21,7 +22,7 @@ import java.util.*;
 
 @Repository
 @Transactional(readOnly = true)
-public class JdbcUserRepository extends JdbcRepository implements UserRepository {
+public class JdbcUserRepository implements UserRepository {
 
     private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
 
@@ -44,7 +45,7 @@ public class JdbcUserRepository extends JdbcRepository implements UserRepository
     @Override
     @Transactional
     public User save(@Valid User user) {
-        super.validate(user);
+        ValidationUtil.validate(user);
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
