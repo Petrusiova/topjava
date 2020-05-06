@@ -69,9 +69,10 @@
 
         <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
             <property  name="dataSource"  ref="dataSource" />
-            <!--<tx:annotation-driven/>-->
-
         </bean>
+
+        <tx:annotation-driven/>
+
     </beans>
 
     <beans profile="jpa,datajpa">

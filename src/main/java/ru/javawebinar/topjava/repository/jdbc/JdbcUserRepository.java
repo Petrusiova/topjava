@@ -97,7 +97,11 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public User getByEmail(String email) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        return DataAccessUtils.singleResult(setRolesToUsers(users, DataAccessUtils.singleResult(users).getId()));
+        User user = DataAccessUtils.singleResult(users);
+        if (user != null) {
+            return DataAccessUtils.singleResult(setRolesToUsers(List.of(user), user.getId()));
+        }
+        return null;
     }
 
     @Override
@@ -109,7 +113,7 @@ public class JdbcUserRepository implements UserRepository {
 
     private List<User> setRolesToUsers(List<User> users, Object... args) {
         List<Map<String, Object>> list;
-        String sql = "SELECT user_id, role FROM user_roles";
+        String sql = "SELECT * FROM user_roles";
         list = args.length == 0 ? jdbcTemplate.queryForList(sql) : jdbcTemplate.queryForList(sql + " WHERE user_id=?", args);
         list.forEach(map -> users.stream().filter(user -> map.get("user_id").equals(user.getId()))
                 .forEach(user -> user.addRole(Role.valueOf((String) map.get("ROLE")))));
