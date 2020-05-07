@@ -5,6 +5,7 @@ import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.validation.*;
+import java.util.HashSet;
 import java.util.Set;
 
 public class ValidationUtil {
@@ -64,9 +65,7 @@ public class ValidationUtil {
     public static <T> void validate(T entity){
         Set<ConstraintViolation<T>> violations = VALIDATOR.validate(entity);
         if (violations.size() > 0){
-            violations.forEach(violation -> {
-                throw new ValidationException(violation.getMessage());
-            });
+            throw new ConstraintViolationException(violations);
         }
     }
 }

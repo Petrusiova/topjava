@@ -28,17 +28,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     private UserRepository repository;
 
     @Autowired
-    private CacheManager cacheManager;
+    protected CacheManager cacheManager;
 
-    @Autowired(required = false)
-    protected JpaUtil jpaUtil;
 
     @Before
     public void setUp() throws Exception {
         cacheManager.getCache("users").clear();
-        if(!isJdbc()) {
-            jpaUtil.clear2ndLevelHibernateCache();
-        }
     }
 
     @Test
@@ -57,6 +52,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER));
     }
 
+    @Test
     public void delete() throws Exception {
         service.delete(ADMIN_ID);
         Assert.assertNull(repository.get(ADMIN_ID));

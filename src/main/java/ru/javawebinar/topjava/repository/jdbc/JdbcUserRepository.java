@@ -15,9 +15,10 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
-import javax.validation.*;
+import javax.validation.Valid;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
 
 @Repository
@@ -60,20 +61,19 @@ public class JdbcUserRepository implements UserRepository {
             }
             jdbcTemplate.update("delete from user_roles where user_id = ?", user.getId());
         }
-        List<Role> roles = new ArrayList<>();
-        roles.addAll(user.getRoles());
-        batchUpdateRole(user, roles);
+        batchUpdateRole(user, user.getRoles());
         return user;
     }
 
-    public int[] batchUpdateRole(User user, List<Role> roles) {
+    public int[] batchUpdateRole(User user,  Set<Role> roles) {
         return this.jdbcTemplate.batchUpdate(
                 "insert into user_roles  values (?, ?)",
                 new BatchPreparedStatementSetter() {
                     public void setValues(PreparedStatement ps, int i)
                             throws SQLException {
                         ps.setInt(1, user.getId());
-                        ps.setString(2, roles.get(i).name());
+                        Role role = (Role) roles.toArray()[i];
+                        ps.setString(2, role.name());
                     }
 
                     public int getBatchSize() {
@@ -91,7 +91,8 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public User get(int id) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
-        return DataAccessUtils.singleResult(setRolesToUsers(users, id));
+        User user = DataAccessUtils.singleResult(users);
+        return setRolesToUser(user, id);
     }
 
     @Override
@@ -99,24 +100,44 @@ public class JdbcUserRepository implements UserRepository {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
         User user = DataAccessUtils.singleResult(users);
         if (user != null) {
-            return DataAccessUtils.singleResult(setRolesToUsers(List.of(user), user.getId()));
+            return setRolesToUser(user, user.getId());
         }
         return null;
     }
 
     @Override
     public List<User> getAll() {
-        Set<User> users = new HashSet<>();
-        users.addAll(jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER));
-        return setRolesToUsers(List.copyOf(users));
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(
+                "SELECT * FROM user_roles ur join users u on u.id = ur.user_id");
+        Map<Integer, User> users = new HashMap<>();
+        for (Map<String, Object> map : list) {
+
+            int id = (int) map.get("ID");
+            User user;
+            if (users.keySet().contains(id)){
+                user = users.get(id);
+                user.addRole(Role.valueOf((String) map.get("ROLE")));
+            } else {
+                user = new User();
+                user.setId((int) map.get("ID"));
+                user.setName((String) map.get("NAME"));
+                user.setEmail((String) map.get("EMAIL"));
+                user.setPassword((String) map.get("PASSWORD"));
+                Timestamp registered = (Timestamp) map.get("REGISTERED");
+                user.setRegistered(Date.from(registered.toInstant()));
+                user.setEnabled((Boolean) map.get("ENABLED"));
+                user.setCaloriesPerDay((int) map.get("CALORIES_PER_DAY"));
+            }
+            user.addRole(Role.valueOf((String) map.get("ROLE")));
+            users.put(user.getId(), user);
+        }
+
+        return new ArrayList<>(users.values());
     }
 
-    private List<User> setRolesToUsers(List<User> users, Object... args) {
-        List<Map<String, Object>> list;
-        String sql = "SELECT * FROM user_roles";
-        list = args.length == 0 ? jdbcTemplate.queryForList(sql) : jdbcTemplate.queryForList(sql + " WHERE user_id=?", args);
-        list.forEach(map -> users.stream().filter(user -> map.get("user_id").equals(user.getId()))
-                .forEach(user -> user.addRole(Role.valueOf((String) map.get("ROLE")))));
-        return users;
+    private User setRolesToUser(User user, int user_id) {
+        List<Map<String, Object>> list =  jdbcTemplate.queryForList("SELECT * FROM user_roles WHERE user_id=?", user_id);
+        list.forEach(map -> {if (user.getId().equals(map.get("user_id"))){user.addRole(Role.valueOf((String) map.get("ROLE")));}});
+        return user;
     }
 }
