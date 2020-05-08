@@ -15,7 +15,6 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
-import javax.validation.Valid;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -45,7 +44,7 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     @Transactional
-    public User save(@Valid User user) {
+    public User save(User user) {
         ValidationUtil.validate(user);
 
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
@@ -108,7 +107,7 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         List<Map<String, Object>> list = jdbcTemplate.queryForList(
-                "SELECT * FROM user_roles ur join users u on u.id = ur.user_id");
+                "SELECT * FROM users u join user_roles ur on u.id = ur.user_id ORDER BY u.name, u.email");
         Map<Integer, User> users = new HashMap<>();
         for (Map<String, Object> map : list) {
 
@@ -136,8 +135,11 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     private User setRolesToUser(User user, int user_id) {
-        List<Map<String, Object>> list =  jdbcTemplate.queryForList("SELECT * FROM user_roles WHERE user_id=?", user_id);
-        list.forEach(map -> {if (user.getId().equals(map.get("user_id"))){user.addRole(Role.valueOf((String) map.get("ROLE")));}});
+        if (user == null) {
+            return null;
+        }
+        List<Role> roles = jdbcTemplate.queryForList("SELECT role FROM user_roles WHERE user_id=?", Role.class, user_id);
+        user.setRoles(roles);
         return user;
     }
 }
