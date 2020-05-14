@@ -35,7 +35,7 @@
                     <con:settings>
                         <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                     </con:settings>
-                    <con:endpoint>http://localhost:8081</con:endpoint>
+                    <con:endpoint>http://localhost:8080</con:endpoint>
                     <con:request/>
                     <con:originalUri>http://localhost/topjava/rest/admin/users</con:originalUri>
                     <con:credentials>
@@ -79,7 +79,7 @@
                     <con:settings>
                         <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                     </con:settings>
-                    <con:endpoint>http://localhost:8081</con:endpoint>
+                    <con:endpoint>http://localhost:8080</con:endpoint>
                     <con:request>{"name": "New2",
  "email": "new2@yandex.ru",
  "password": "passwordNew",
@@ -126,7 +126,7 @@
                     <con:settings>
                         <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                     </con:settings>
-                    <con:endpoint>http://localhost:8081</con:endpoint>
+                    <con:endpoint>http://localhost:8080</con:endpoint>
                     <con:request/>
                     <con:originalUri>http://localhost/topjava/rest/admin/users/100000</con:originalUri>
                     <con:credentials>
@@ -180,7 +180,7 @@
                     <con:settings>
                         <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                     </con:settings>
-                    <con:endpoint>http://localhost:8081</con:endpoint>
+                    <con:endpoint>http://localhost:8080</con:endpoint>
                     <con:request>{"name": "UserUpdated",
  "email": "user@yandex.ru",
  "password": "passwordNew",
@@ -227,7 +227,7 @@
                     <con:settings>
                         <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                     </con:settings>
-                    <con:endpoint>http://localhost:8081</con:endpoint>
+                    <con:endpoint>http://localhost:8080</con:endpoint>
                     <con:request/>
                     <con:originalUri>http://localhost/topjava/rest/profile</con:originalUri>
                     <con:credentials>
@@ -299,7 +299,7 @@
                     <con:settings>
                         <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                     </con:settings>
-                    <con:endpoint>http://localhost:8081</con:endpoint>
+                    <con:endpoint>http://localhost:8080</con:endpoint>
                     <con:request>{"name": "New777",
  "email": "new777@yandex.ru",
  "password": "passwordNew",
