@@ -1,7 +1,10 @@
 package ru.javawebinar.topjava.to;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.time.LocalDateTime;
 
+@JsonIgnoreProperties(value = { "excess" })
 public class MealTo {
     private final Integer id;
 

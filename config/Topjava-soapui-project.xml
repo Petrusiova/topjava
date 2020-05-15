@@ -35,7 +35,7 @@
                     <con:settings>
                         <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                     </con:settings>
-                    <con:endpoint>http://localhost:8080</con:endpoint>
+                    <con:endpoint>http://localhost:8081</con:endpoint>
                     <con:request/>
                     <con:originalUri>http://localhost/topjava/rest/admin/users</con:originalUri>
                     <con:credentials>
@@ -79,7 +79,7 @@
                     <con:settings>
                         <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                     </con:settings>
-                    <con:endpoint>http://localhost:8080</con:endpoint>
+                    <con:endpoint>http://localhost:8081</con:endpoint>
                     <con:request>{"name": "New2",
  "email": "new2@yandex.ru",
  "password": "passwordNew",
@@ -98,7 +98,7 @@
                 </con:request>
             </con:method>
         </con:resource>
-        <con:resource name="" path="/topjava/rest/admin/users/100000" id="7f8ab4ae-b6a8-4aa8-a502-9dbebb27ad8b">
+        <con:resource name="" path="/topjava/rest/meals" id="7f8ab4ae-b6a8-4aa8-a502-9dbebb27ad8b">
             <con:settings/>
             <con:parameters/>
             <con:method name="" method="GET" id="7a2525a5-8d97-4c33-97ab-dc071c529154">
@@ -106,7 +106,7 @@
                 <con:parameters/>
                 <con:representation type="FAULT">
                     <con:mediaType>text/html;charset=utf-8</con:mediaType>
-                    <con:status>500</con:status>
+                    <con:status>500 404</con:status>
                     <con:params/>
                     <con:element>html</con:element>
                 </con:representation>
@@ -180,7 +180,7 @@
                     <con:settings>
                         <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                     </con:settings>
-                    <con:endpoint>http://localhost:8080</con:endpoint>
+                    <con:endpoint>http://localhost:8081</con:endpoint>
                     <con:request>{"name": "UserUpdated",
  "email": "user@yandex.ru",
  "password": "passwordNew",
@@ -201,7 +201,7 @@
         </con:resource>
         <con:resource name="" path="/topjava/rest/profile" id="dc6bc427-b446-4a76-bbb7-94608e15aa11">
             <con:settings/>
-            <con:parameters><con:parameter><con:name/><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter></con:parameters>
+            <con:parameters/>
             <con:method name="" method="GET" id="4970902f-2d28-4e9e-bece-e944ea382323">
                 <con:settings/>
                 <con:parameters/>
@@ -227,7 +227,7 @@
                     <con:settings>
                         <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                     </con:settings>
-                    <con:endpoint>http://localhost:8080</con:endpoint>
+                    <con:endpoint>http://localhost:8081</con:endpoint>
                     <con:request/>
                     <con:originalUri>http://localhost/topjava/rest/profile</con:originalUri>
                     <con:credentials>
@@ -299,7 +299,7 @@
                     <con:settings>
                         <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                     </con:settings>
-                    <con:endpoint>http://localhost:8080</con:endpoint>
+                    <con:endpoint>http://localhost:8081</con:endpoint>
                     <con:request>{"name": "New777",
  "email": "new777@yandex.ru",
  "password": "passwordNew",
