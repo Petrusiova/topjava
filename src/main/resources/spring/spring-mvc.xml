@@ -6,8 +6,14 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <bean class="ru.javawebinar.topjava.web.json.JacksonObjectMapper" id="objectMapper" factory-method="getMapper"/>
+    <bean id="localDateFormatter" class="ru.javawebinar.topjava.util.LocalDateFormatter"/>
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="formatters" ref="localDateFormatter">
 
-    <mvc:annotation-driven>
+        </property>
+    </bean>
+
+    <mvc:annotation-driven conversion-service="conversionService">
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="objectMapper" ref="objectMapper"/>
@@ -20,14 +26,9 @@
                     </list>
                 </property>
             </bean>
+
         </mvc:message-converters>
     </mvc:annotation-driven>
-
-    <mvc:annotation-driven conversion-service="conversionService"/>
-    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-        <property name="formatters" ref="localDateFormatter">
-        </property>
-    </bean>
 
     <context:component-scan base-package="ru.javawebinar.**.web"/>
 
@@ -55,5 +56,5 @@
         <property name="basenames" value="file:///#{systemEnvironment['TOPJAVA_ROOT']}/config/messages/app"/>
         <property name="fallbackToSystemLocale" value="false"/>
     </bean>
-    <bean id="localDateFormatter" class="ru.javawebinar.topjava.util.LocalDateFormatter"/>
+
 </beans>
