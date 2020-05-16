@@ -19,6 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.readFromJson;
+import static ru.javawebinar.topjava.util.MealsUtil.getTos;
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 public class MealRestControllerTest extends AbstractControllerTest {
@@ -29,16 +31,16 @@ public class MealRestControllerTest extends AbstractControllerTest {
     private MealService mealService;
 
     @Test
-    void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "/filter/fromDate=" + START_DATE
-                + "&fromTime=" + START_TIME + "&toDate=" + END_DATE + "&toTime=" + END_TIME))
+    void getBetween() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL +
+                "/filter/fromDate=2020-01-30&fromTime=10:00:00&toDate=2020-01-30&toTime=10:01:00"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_MATCHER.contentJson(List.of(MEAL1)));
+                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(List.of(MEAL1), authUserCaloriesPerDay())));
     }
 
     @Test
-    void getBetween() throws Exception {
+    void get() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -84,6 +86,6 @@ public class MealRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_MATCHER.contentJson(MEALS));
+                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(MEALS, authUserCaloriesPerDay())));
     }
 }
