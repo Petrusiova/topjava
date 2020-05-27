@@ -74,3 +74,14 @@ function failNoty(jqXHR) {
         layout: "bottomRight"
     }).show();
 }
+
+function _clear() {
+    document.getElementById('startDate').value = "";
+    document.getElementById('endDate').value = "";
+    document.getElementById('startTime').value = "";
+    document.getElementById('endTime').value = "";
+}
+
+function changeEnabled() {
+
+}
