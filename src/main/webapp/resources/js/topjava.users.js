@@ -40,3 +40,7 @@ $(function () {
         }
     );
 });
+
+function changeEnabled() {
+
+}

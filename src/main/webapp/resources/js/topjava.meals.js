@@ -27,10 +27,17 @@ $(function () {
                 "order": [
                     [
                         0,
-                        "asc"
+                        "desc"
                     ]
                 ]
             })
         }
     );
 });
+
+function _clear() {
+    document.getElementById('startDate').value = "";
+    document.getElementById('endDate').value = "";
+    document.getElementById('startTime').value = "";
+    document.getElementById('endTime').value = "";
+}
