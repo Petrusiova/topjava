@@ -41,6 +41,13 @@ $(function () {
     );
 });
 
-function changeEnabled() {
-
+function changeEnabled(enabled, id) {
+    $.ajax({
+        type: "POST",
+        url: "ajax/admin/users/" + id,
+        data: "enabled=" + !enabled
+    }).done(function () {
+        updateTable();
+        successNoty("user with id = " + id + " is" + !enabled);
+    });
 }

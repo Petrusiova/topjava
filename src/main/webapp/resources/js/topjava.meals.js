@@ -1,7 +1,9 @@
+let ajaxUserMeals = "ajax/user/meals/";
+
 // $(document).ready(function () {
 $(function () {
     makeEditable({
-            ajaxUrl: "ajax/user/meals/",
+            ajaxUrl: ajaxUserMeals,
             datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,
@@ -40,4 +42,19 @@ function _clear() {
     document.getElementById('endDate').value = "";
     document.getElementById('startTime').value = "";
     document.getElementById('endTime').value = "";
+}
+
+function filtering() {
+let form = document.forms.namedItem('filter');
+form.addEventListener('submit', (e)=> {
+    e.preventDefault();
+    $.ajax({
+        url: ajaxUserMeals + "filter",
+        type: "GET",
+        data: $("#filter").serialize()
+    }).done(function () {
+        updateTable();
+        successNoty("Filtered");
+    });
+})
 }
