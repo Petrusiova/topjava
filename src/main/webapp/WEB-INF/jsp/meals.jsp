@@ -30,7 +30,6 @@
             <dt><spring:message code="meal.endTime"/>:</dt>
             <dd><input type="time" name="endTime" value="${param.endTime}" id="endTime"></dd>
         </dl>
-<%--        <button type="submit" onclick="filtering()"><spring:message code="meal.filter"/></button>--%>
         <button onclick="filtering()"><spring:message code="meal.filter"/></button>
         <button type="button" onclick="_clear()"><spring:message code="meal.clearFilter"/></button>
     </form>

@@ -29,10 +29,14 @@ function deleteRow(id) {
     }
 }
 
-function updateTable() {
+function updateTable(data) {
     $.get(context.ajaxUrl, function (data) {
         context.datatableApi.clear().rows.add(data).draw();
     });
+}
+
+function updateFilteredTable(data) {
+        context.datatableApi.clear().rows.add(data).draw();
 }
 
 function save() {
@@ -43,6 +47,7 @@ function save() {
     }).done(function () {
         $("#editRow").modal("hide");
         updateTable();
+        getExpectedMeals();
         successNoty("Saved");
     });
 }

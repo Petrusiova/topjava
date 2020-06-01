@@ -42,19 +42,23 @@ function _clear() {
     document.getElementById('endDate').value = "";
     document.getElementById('startTime').value = "";
     document.getElementById('endTime').value = "";
+    getExpectedMeals();
 }
 
 function filtering() {
 let form = document.forms.namedItem('filter');
 form.addEventListener('submit', (e)=> {
     e.preventDefault();
+    getExpectedMeals();
+})
+}
+
+function getExpectedMeals() {
     $.ajax({
         url: ajaxUserMeals + "filter",
         type: "GET",
         data: $("#filter").serialize()
-    }).done(function () {
-        updateTable();
-        successNoty("Filtered");
-    });
-})
+    }).done(function (data) {
+        updateFilteredTable(data);
+    })
 }
