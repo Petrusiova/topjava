@@ -48,6 +48,6 @@ function changeEnabled(enabled, id) {
         data: "enabled=" + !enabled
     }).done(function () {
         updateTable();
-        successNoty("user with id = " + id + " is" + !enabled);
+        successNoty("user with id = " + id + " is " + !enabled);
     });
 }

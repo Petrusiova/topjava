@@ -23,6 +23,18 @@ tr[data-mealExcess="true"] {
     color: red;
 }
 
+tr[data-userEnabled="false"] {
+    background: rgba(185, 198, 203, 0.15); /* Цвет фона */
+    opacity: 0.7; /* Полупрозрачный фон */
+    filter: alpha(Opacity=70); /* Прозрачность в IE */
+    color: lightcoral;
+}
+
+tr[data-userEnabled="true"] {
+    background: rgba(185, 198, 203, 0.15); /* Цвет фона */
+    color: black;
+}
+
 .fa {
     cursor: pointer;
 }
