@@ -42,15 +42,19 @@ function _clear() {
     document.getElementById('endDate').value = "";
     document.getElementById('startTime').value = "";
     document.getElementById('endTime').value = "";
-    getExpectedMeals();
+    updateTable();
 }
 
 function filtering() {
-let form = document.forms.namedItem('filter');
-form.addEventListener('submit', (e)=> {
-    e.preventDefault();
+    let form = document.forms.namedItem('filter');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        getExpectedMeals();
+    })
+}
+
+function update() {
     getExpectedMeals();
-})
 }
 
 function getExpectedMeals() {

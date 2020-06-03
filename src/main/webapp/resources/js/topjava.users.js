@@ -51,3 +51,7 @@ function changeEnabled(enabled, id) {
         successNoty("user with id = " + id + " is " + !enabled);
     });
 }
+
+function update() {
+    updateTable();
+}

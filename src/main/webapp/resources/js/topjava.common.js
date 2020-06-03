@@ -31,7 +31,7 @@ function deleteRow(id) {
 
 function updateTable() {
     $.get(context.ajaxUrl, function (data) {
-        context.datatableApi.clear().rows.add(data).draw();
+        updateFilteredTable(data);
     });
 }
 
@@ -46,8 +46,7 @@ function save() {
         data: form.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
-        updateTable();
-        getExpectedMeals();
+        update();
         successNoty("Saved");
     });
 }
