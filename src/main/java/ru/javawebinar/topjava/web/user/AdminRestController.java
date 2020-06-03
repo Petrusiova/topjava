@@ -50,10 +50,17 @@ public class AdminRestController extends AbstractUserController {
         super.update(user, id);
     }
 
-    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+//    public void enable(@RequestBody User user, @PathVariable int id) {
+//        super.update(user, id);
+//    }
+
+    @Override
+    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void enable(@RequestBody User user, @PathVariable int id) {
-        super.update(user, id);
+    public void enable(@PathVariable int id, boolean enabled) {
+        super.enable(id, enabled);
     }
 
     @GetMapping("/by")
