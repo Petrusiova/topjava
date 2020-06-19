@@ -2,7 +2,9 @@ package ru.javawebinar.topjava.to;
 
 import ru.javawebinar.topjava.HasId;
 
-public abstract class BaseTo implements HasId {
+import java.io.Serializable;
+
+public abstract class BaseTo implements HasId, Serializable {
     protected Integer id;
 
     public BaseTo() {
