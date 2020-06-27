@@ -44,19 +44,13 @@ public class MealUIController extends AbstractMealController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<String> createOrUpdate(@Valid Meal meal, BindingResult result) {
-        if (result.hasErrors()) {
-            StringJoiner joiner = new StringJoiner("<br>");
-            result.getFieldErrors().forEach(
-                    fe -> joiner.add(String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-            );
-            return ResponseEntity.unprocessableEntity().body(joiner.toString());
-        }
+        ResponseEntity<String> stringResponseEntity = checkResult(result);
         if (meal.isNew()) {
             super.create(meal);
         } else {
             super.update(meal, meal.id());
         }
-        return ResponseEntity.ok().build();
+        return stringResponseEntity;
     }
 
     @Override
