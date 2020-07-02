@@ -14,7 +14,6 @@ public class MealTo extends BaseTo {
     private final String description;
 
     @Nullable
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private final Integer calories;
 
     private final boolean excess;
