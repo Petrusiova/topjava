@@ -13,7 +13,6 @@ public class MealTo extends BaseTo {
 
     private final String description;
 
-    @Nullable
     private final Integer calories;
 
     private final boolean excess;

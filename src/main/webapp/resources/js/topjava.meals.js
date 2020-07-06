@@ -13,6 +13,13 @@ function clearFilter() {
     $.get(mealsAjaxUrl, updateTableByData);
 }
 
+$.ajaxSetup({
+    converters: {
+        "text json": function(json_string) {
+            return $.parseJSON(json_string);
+        }}
+});
+
 $(function () {
     makeEditable({
         ajaxUrl: mealsAjaxUrl,
@@ -27,10 +34,7 @@ $(function () {
                 {
                     "data": "dateTime",
                     "render": function (date, type, row) {
-                        if (type === "display") {
                             return date.replace('T', ' ');
-                        }
-                        return date;
                     }
                 },
                 {
@@ -58,12 +62,7 @@ $(function () {
             ]
             ,
             "createdRow": function (row, data, dataIndex) {
-                if (!data.excess) {
-                    $(row).attr("data-mealExcess", false);
-                }
-                else {
-                    $(row).attr("data-mealExcess", true);
-                }
+                    $(row).attr("data-mealExcess", data.excess);
             }
         }),
         updateTable: updateFilteredTable
