@@ -15,9 +15,14 @@ function clearFilter() {
 
 $.ajaxSetup({
     converters: {
-        "text json": function(json_string) {
-            return $.parseJSON(json_string);
-        }}
+        "text json": function (stringData) {
+            var json = JSON.parse(stringData);
+            $(json).each(function () {
+                this.dateTime = this.dateTime.replace('T', ' ').substr(0, 16);
+            });
+            return json;
+        }
+    }
 });
 
 $(function () {
@@ -34,7 +39,7 @@ $(function () {
                 {
                     "data": "dateTime",
                     "render": function (date, type, row) {
-                            return date.replace('T', ' ');
+                            return date.replace('T', ' ').substr(0, 16);
                     }
                 },
                 {

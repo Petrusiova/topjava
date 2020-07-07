@@ -85,7 +85,7 @@
                     </div>
                     <script>
                         $('#dateTime').datetimepicker({
-                            format: 'Y-m-d H:i:s'
+                            format: 'Y-m-d H:i'
                         });
 
                         $('#startTime').datetimepicker({
