@@ -15,6 +15,10 @@ function enable(chkbox, id) {
     });
 }
 
+function duplicateEmail(){
+    alert('User with the same email has already exists')
+}
+
 // $(document).ready(function () {
 $(function () {
     makeEditable({

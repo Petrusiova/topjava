@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.UserUtil;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
@@ -31,6 +32,7 @@ public abstract class AbstractUserController {
 
     public User create(UserTo userTo) {
         log.info("create from to {}", userTo);
+
         return create(UserUtil.createNewFromTo(userTo));
     }
 
