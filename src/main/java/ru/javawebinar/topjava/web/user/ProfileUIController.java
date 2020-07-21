@@ -23,14 +23,18 @@ public class ProfileUIController extends AbstractUserController {
     }
 
     @PostMapping
-    public String updateProfile(@Valid UserTo userTo, SessionStatus status) {
+    public String updateProfile(@Valid UserTo userTo, BindingResult result, SessionStatus status, ModelMap model) {
+        if (result.hasErrors()) {
+            return "profile";
+        }
         try {
             super.update(userTo, SecurityUtil.authUserId());
             SecurityUtil.get().update(userTo);
             status.setComplete();
             return "redirect:/meals";
-        } catch (Exception e){
-            throw new DataIntegrityViolationException("User with this email already exists");
+        } catch (DataIntegrityViolationException ex) {
+            result.rejectValue("email", "409", "User with this email already exists");
+            return "profile";
         }
     }
 
@@ -42,15 +46,20 @@ public class ProfileUIController extends AbstractUserController {
     }
 
     @PostMapping("/register")
-    public String saveRegister(@Valid UserTo userTo,SessionStatus status, ModelMap model) {
-        try {
-
-                super.create(userTo);
-                status.setComplete();
-                return "redirect:/login?message=app.registered&username=" + userTo.getEmail();
-
-        } catch (Exception e){
-            throw new DataIntegrityViolationException("User with this email already exists");
+    public String saveRegister(@Valid UserTo userTo, BindingResult result, SessionStatus status, ModelMap model) {
+        if (result.hasErrors()) {
+            model.addAttribute("register", true);
+            return "profile";
         }
+        try {
+            super.create(userTo);
+            status.setComplete();
+            return "redirect:/login?message=app.registered&username=" + userTo.getEmail();
+        } catch (DataIntegrityViolationException e) {
+            result.rejectValue("email", "409", "User with this email already exists");
+            model.addAttribute("register", true);
+            return "profile";
+        }
+
     }
 }
