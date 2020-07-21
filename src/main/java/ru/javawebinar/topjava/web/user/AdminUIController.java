@@ -41,8 +41,8 @@ public class AdminUIController extends AbstractUserController {
             } else {
                 super.update(userTo, userTo.id());
             }
-        } catch (DataIntegrityViolationException e){
-            throw new DataIntegrityViolationException("User with this email already exists");
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException(DUPLICATE_EMAIL);
         }
     }
 

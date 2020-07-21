@@ -23,7 +23,7 @@ public class ProfileUIController extends AbstractUserController {
     }
 
     @PostMapping
-    public String updateProfile(@Valid UserTo userTo, BindingResult result, SessionStatus status, ModelMap model) {
+    public String updateProfile(@Valid UserTo userTo, BindingResult result, SessionStatus status) {
         if (result.hasErrors()) {
             return "profile";
         }
@@ -33,7 +33,7 @@ public class ProfileUIController extends AbstractUserController {
             status.setComplete();
             return "redirect:/meals";
         } catch (DataIntegrityViolationException ex) {
-            result.rejectValue("email", "409", "User with this email already exists");
+            result.rejectValue("email", "409", DUPLICATE_EMAIL);
             return "profile";
         }
     }
@@ -56,7 +56,7 @@ public class ProfileUIController extends AbstractUserController {
             status.setComplete();
             return "redirect:/login?message=app.registered&username=" + userTo.getEmail();
         } catch (DataIntegrityViolationException e) {
-            result.rejectValue("email", "409", "User with this email already exists");
+            result.rejectValue("email", "409", DUPLICATE_EMAIL);
             model.addAttribute("register", true);
             return "profile";
         }
