@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.web.meal;
 
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,6 +13,10 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import java.time.LocalDateTime;
 
@@ -34,6 +39,9 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Autowired
     private MealService mealService;
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Test
     void get() throws Exception {
@@ -101,7 +109,25 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void nonValidDataTest() throws Exception{
+    void createWithDuplicateDateTime() throws Exception {
+        Meal updated = MealTestData.getUpdated();
+        updated.setId(null);
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            try {
+                perform(MockMvcRequestBuilders.post(REST_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JsonUtil.writeValue(updated))
+                        .with(userHttpBasic(USER)));
+                entityManager.flush();
+            } catch (PersistenceException e){
+                throw e.getCause();
+            }
+        });
+    }
+
+    @Test
+    void nonValidDataTest() throws Exception {
         Meal newMeal = new Meal(LocalDateTime.MIN, "", 5);
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)

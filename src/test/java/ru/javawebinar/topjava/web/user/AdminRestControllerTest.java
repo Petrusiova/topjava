@@ -14,6 +14,9 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -31,6 +34,9 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Autowired
     private UserService userService;
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Test
     void get() throws Exception {
@@ -121,33 +127,50 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void nonValidDataTest() throws Exception{
-        User newUser = new User(null, "", "", "", 0, Role.USER);
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(ADMIN))
-                .content(UserTestData.jsonWithPassword(newUser, "newPass")))
-                .andExpect(status().isUnprocessableEntity());
+    void createWithDuplicateEmail() throws Exception {
+        User newUser = UserTestData.getNew();
+        newUser.setEmail(USER.getEmail());
+
+        assertThrows(Exception.class, () -> {
+            try {
+                perform(MockMvcRequestBuilders.post(REST_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(userHttpBasic(ADMIN))
+                        .content(UserTestData.jsonWithPassword(newUser, "newPass")));
+            } catch (PersistenceException e) {
+                throw e.getCause();
+            }
+        });
     }
 
-    @Test
-    void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL)
-                .with(userHttpBasic(ADMIN)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_MATCHER.contentJson(ADMIN, USER));
-    }
+        @Test
+        void nonValidDataTest () throws Exception {
+            User newUser = new User(null, "", "", "", 0, Role.USER);
+            ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(userHttpBasic(ADMIN))
+                    .content(UserTestData.jsonWithPassword(newUser, "newPass")))
+                    .andExpect(status().isUnprocessableEntity());
+        }
 
-    @Test
-    void enable() throws Exception {
-        perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID)
-                .param("enabled", "false")
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(ADMIN)))
-                .andDo(print())
-                .andExpect(status().isNoContent());
+        @Test
+        void getAll () throws Exception {
+            perform(MockMvcRequestBuilders.get(REST_URL)
+                    .with(userHttpBasic(ADMIN)))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                    .andExpect(USER_MATCHER.contentJson(ADMIN, USER));
+        }
 
-        assertFalse(userService.get(USER_ID).isEnabled());
+        @Test
+        void enable () throws Exception {
+            perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID)
+                    .param("enabled", "false")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(userHttpBasic(ADMIN)))
+                    .andDo(print())
+                    .andExpect(status().isNoContent());
+
+            assertFalse(userService.get(USER_ID).isEnabled());
+        }
     }
-}
