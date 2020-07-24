@@ -43,7 +43,7 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
 
-        return logAndGetErrorInfo(req, e, true, DATA_ERROR, e.getMessage());
+        return logAndGetErrorInfo(req, e, true, DATA_ERROR, e.getLocalizedMessage());
     }
 
     @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)

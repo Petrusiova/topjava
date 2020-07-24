@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -131,12 +132,13 @@ class AdminRestControllerTest extends AbstractControllerTest {
         User newUser = UserTestData.getNew();
         newUser.setEmail(USER.getEmail());
 
-        assertThrows(Exception.class, () -> {
+        assertThrows(ConstraintViolationException.class, () -> {
             try {
                 perform(MockMvcRequestBuilders.post(REST_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(userHttpBasic(ADMIN))
                         .content(UserTestData.jsonWithPassword(newUser, "newPass")));
+                entityManager.flush();
             } catch (PersistenceException e) {
                 throw e.getCause();
             }
